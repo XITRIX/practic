@@ -18,7 +18,7 @@ DEFINE_RWLOCK( lock );
 static int acme_count = 1;
 static dev_t acme_dev = MKDEV(202, 128);
 
-static struct cdev acme_cdev;
+static struct cdev acme_cdev; 
 
 static ssize_t 
 acme_open(struct inode *_inode, struct file *_file){
@@ -59,7 +59,7 @@ acme_write(struct file *file, const char __user *buf, size_t count,
 		i++;
 	}
 
-	return count;
+	return count; 
 }
 
 static const struct file_operations acme_fops = {

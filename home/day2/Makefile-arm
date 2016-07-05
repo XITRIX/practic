@@ -1,0 +1,7 @@
+obj-m += symbol_driver.o
+KDIR := /home/user/ti-processor-sdk-linux-am335x-evm-02.00.02.11/board-support/linux-4.1.18+gitAUTOINC+bbe8cfc1da-gbbe8cfc/
+
+all:
+	make -C $(KDIR) M=$(shell pwd) modules
+clean:
+	make -C $(KDIR) M=$(shell pwd) clean

@@ -8,8 +8,6 @@
 #include <linux/slab.h>
 #include <linux/string.h>
 
-/* Physical address of the imaginary acme device */
-
 static void *acme_buf;
 static int acme_bufsize = 255;
 static int write_caret = 0;
@@ -22,35 +20,16 @@ static dev_t acme_dev = MKDEV(202, 128);
 
 static struct cdev acme_cdev;
 
+static ssize_t 
+acme_open(struct inode *_inode, struct file *_file){
+	//printk(KERN_INFO"OPEN!!!\n");
+	return 0;
+}
+
 static ssize_t
 acme_read(struct file *file, char __user * buf, size_t count, loff_t * ppos)
 {
-	/* The acme_buf address corresponds to a device I/O memory area */
-	/* of size acme_bufsize, obtained with ioremap() */
-	printk("READ!!!");
-	/*int remaining_size, transfer_size;
-
-	//write_unlock( &lock );
-
-	remaining_size = acme_bufsize - (int)(*ppos) - read_caret;
-				/* bytes left to transfer *-/
-	if (remaining_size == 0) {
-				/* All read, returning 0 (End Of File) *-/
-		return 0;
-	}
-
-	/* Size of this transfer *-/
-	transfer_size = min_t(int, remaining_size, count);
-
-	if (copy_to_user
-	    (buf /* to *-/ , acme_buf + *ppos + read_caret /* from *-/ , transfer_size)) {
-		return -EFAULT;
-	} else {		/* Increase the position in the open file *-/
-		read_caret += transfer_size;
-		read_caret %= acme_bufsize;
-		*ppos += transfer_size;
-		return transfer_size;
-	}*/
+	//printk("READ!!!\n");
 	int i = 0;
 	while (read_caret != write_caret){
 		if (read_caret > write_caret+1) 
@@ -69,27 +48,7 @@ static ssize_t
 acme_write(struct file *file, const char __user *buf, size_t count,
 	   loff_t *ppos)
 {
-	printk("WRITE!!!");
-	/*int remaining_bytes;
-	//write_lock( &lock );
-
-	/* Number of bytes not written yet in the device *-/
-	remaining_bytes = acme_bufsize - (*ppos);
-
-	if (count > remaining_bytes) {
-		/* Can't write beyond the end of the device *-/
-		return -EIO;
-	}
-
-	if (copy_from_user(acme_buf + *ppos + write_caret /*to*-/ , buf /*from*-/ , count)) {
-		return -EFAULT;
-	} else {
-		/* Increase the position in the open file *-/
-		write_caret+=count;
-		write_caret %= acme_bufsize;
-		*ppos += count;
-		return count;
-	}*/
+	//printk("WRITE!!!\n");
 	int i = 0;
 	while (i < count){
 		if (write_caret >= read_caret-1) 
@@ -107,6 +66,7 @@ static const struct file_operations acme_fops = {
 	.owner = THIS_MODULE,
 	.read = acme_read,
 	.write = acme_write,
+	.open = acme_open,
 };
 
 static int __init acme_init(void)
